@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foresight Consulting Group — AI Governance &amp; Technology Strategy</title>
+<meta name="description" content="FCG helps organizations assess AI readiness, build governance structures, and align technology strategy to measurable business outcomes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     PHASE 4 — FRAMER IMPLEMENTATION REFERENCE
+     Status: PRODUCTION READY
+     Approved: Phase 1 (Wireframes), Phase 2 (Design Rev 3), Phase 3 (Content)
+
+     FRAMER IMPLEMENTATION NOTES:
+     - Each .panel = one Framer page (Home, Services, Diagnostic, About, Contact)
+     - Replace [ CALENDLY EMBED ] with your Calendly inline widget code
+     - Replace [ DIAGNOSTIC URL ] with your Vercel deployment URL
+     - Replace photo src with uploaded Framer asset URL
+     - Mobile nav hamburger is functional in this file — replicate in Framer
+     - Accordion JS logic is in <script> at bottom — replicate as Framer interactions
+     ============================================================ -->
+
+<style>
+/* ============================================================
+   FCG DESIGN SYSTEM — Rev 3 LOCKED
+   ============================================================ */
+:root {
+  --navy-900:   #071828;
+  --navy-800:   #0D2438;
+  --navy-700:   #1A3A5C;
+  --blue-700:   #1D4ED8;
+  --blue-600:   #2563EB;
+  --blue-light: #60A5FA;
+  --blue-100:   #DBEAFE;
+  --blue-50:    #EFF6FF;
+  --grey-900:   #0F172A;
+  --grey-800:   #1E293B;
+  --grey-700:   #334155;
+  --grey-500:   #64748B;
+  --grey-300:   #CBD5E1;
+  --grey-100:   #F1F5F9;
+  --grey-50:    #F8FAFC;
+  --white:      #FFFFFF;
+  --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif:   'Crimson Pro', Georgia, serif;
+  --section-pad: 80px 0;
+  --container:   1080px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-primary); background: var(--grey-50); color: var(--grey-700); -webkit-font-smoothing: antialiased; }
+
+/* ---- Page routing ---- */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ---- Layout ---- */
+.container { max-width: var(--container); margin: 0 auto; padding: 0 32px; }
+
+/* ---- Site Nav ---- */
+.site-nav { background: var(--navy-900); border-bottom: 1px solid rgba(255,255,255,0.06); position: sticky; top: 0; z-index: 100; }
+.site-nav .inner { max-width: var(--container); margin: 0 auto; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+.site-nav .logo { font-size: 14px; font-weight: 800; color: var(--white); letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; text-decoration: none; }
+.site-nav .logo span { color: var(--blue-light); }
+.site-nav .nav-links { display: flex; gap: 32px; align-items: center; }
+.site-nav .nav-links a { color: #E2E8F0; text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.15s; cursor: pointer; }
+.site-nav .nav-links a:hover, .site-nav .nav-links a.active { color: var(--white); }
+.site-nav .nav-cta { background: var(--blue-700); color: var(--white); text-decoration: none; font-size: 12px; font-weight: 700; padding: 9px 20px; border-radius: 4px; letter-spacing: 0.01em; cursor: pointer; }
+.site-nav .nav-cta:hover { background: var(--blue-600); }
+.nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 8px; flex-direction: column; gap: 5px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.2s; }
+.mobile-menu { display: none; background: var(--navy-800); border-top: 1px solid rgba(255,255,255,0.08); padding: 16px 32px 20px; }
+.mobile-menu a { display: block; color: #E2E8F0; text-decoration: none; font-size: 14px; font-weight: 500; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer; }
+.mobile-menu a:last-child { border-bottom: none; }
+.mobile-menu .mobile-cta { margin-top: 14px; display: block; background: var(--blue-700); color: white; text-align: center; padding: 12px; border-radius: 4px; font-weight: 700; font-size: 13px; }
+
+/* ---- Typography ---- */
+.eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--blue-700); margin-bottom: 10px; }
+.eyebrow-light { color: var(--blue-light); }
+h1, .h1 { font-size: clamp(32px, 4vw, 48px); font-weight: 800; line-height: 1.15; color: var(--grey-900); letter-spacing: -0.02em; }
+h2, .h2 { font-size: clamp(22px, 3vw, 32px); font-weight: 700; line-height: 1.25; color: var(--grey-900); letter-spacing: -0.01em; }
+h3, .h3 { font-size: 18px; font-weight: 700; color: var(--grey-900); line-height: 1.4; }
+.lead { font-size: 17px; line-height: 1.7; color: var(--grey-700); font-weight: 400; }
+p { font-size: 15px; line-height: 1.75; color: var(--grey-700); }
+
+/* ---- Buttons ---- */
+.btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-primary); font-size: 13px; font-weight: 700; padding: 12px 24px; border-radius: 4px; cursor: pointer; transition: all 0.15s; text-decoration: none; letter-spacing: 0.01em; border: none; }
+.btn-primary { background: var(--blue-700); color: var(--white); }
+.btn-primary:hover { background: var(--blue-600); }
+.btn-outline { background: transparent; color: var(--white); border: 1.5px solid rgba(255,255,255,0.35); }
+.btn-outline:hover { border-color: rgba(255,255,255,0.75); }
+.btn-outline-dark { background: transparent; color: var(--blue-700); border: 1.5px solid var(--blue-700); }
+.btn-outline-dark:hover { background: var(--blue-50); }
+.btn-white { background: var(--white); color: var(--navy-900); font-weight: 700; }
+.btn-white:hover { background: var(--grey-100); }
+.btn-arrow::after { content: ' \2192'; }
+
+/* ---- Badges ---- */
+.badge { display: inline-block; background: var(--blue-100); color: var(--blue-700); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 3px; letter-spacing: 0.03em; }
+.badge-dark { background: rgba(29,78,216,0.2); color: #93C5FD; }
+
+/* ---- Page Header ---- */
+.page-header { background: var(--navy-900); padding: 72px 0 64px; position: relative; overflow: hidden; }
+.page-header::before { content: ''; position: absolute; top: 0; right: 0; width: 500px; height: 100%; background: linear-gradient(135deg, transparent 40%, rgba(29,78,216,0.06) 100%); pointer-events: none; }
+.page-header h1 { color: var(--white); font-size: clamp(28px, 4vw, 44px); margin-bottom: 16px; }
+.page-header .lead { color: #E2E8F0; max-width: 560px; font-size: 16px; }
+
+/* ---- Section utilities ---- */
+.section-white { padding: var(--section-pad); background: var(--white); }
+.section-light { padding: var(--section-pad); background: var(--grey-50); }
+.section-dark { padding: var(--section-pad); background: var(--navy-900); position: relative; overflow: hidden; }
+.section-mid { padding: var(--section-pad); background: var(--navy-800); }
+.section-header { margin-bottom: 48px; }
+.section-header h2 { margin-bottom: 12px; }
+.divider { border: none; border-top: 1px solid var(--grey-300); }
+.divider-dark { border-color: rgba(255,255,255,0.1); }
+
+/* ---- Footer ---- */
+.site-footer { background: var(--navy-900); border-top: 1px solid rgba(255,255,255,0.06); padding: 40px 0; }
+.footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+.footer-logo { font-size: 13px; font-weight: 800; color: var(--white); text-transform: uppercase; letter-spacing: 0.04em; }
+.footer-logo span { color: var(--blue-light); }
+.footer-meta { font-size: 12px; color: #CBD5E1; margin-top: 4px; }
+.footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+.footer-links a { font-size: 12px; color: #E2E8F0; text-decoration: none; transition: color 0.15s; cursor: pointer; }
+.footer-links a:hover { color: var(--white); }
+
+/* ============================================================
+   HOME PAGE
+   ============================================================ */
+.hero { background: var(--navy-900); padding: 96px 0 88px; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: 0; right: 0; width: 600px; height: 100%; background: linear-gradient(135deg, transparent 40%, rgba(29,78,216,0.06) 100%); pointer-events: none; }
+.hero-grid { display: grid; grid-template-columns: 1fr 420px; gap: 64px; align-items: center; }
+.hero-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(29,78,216,0.15); border: 1px solid rgba(96,165,250,0.35); color: #93C5FD; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.08em; }
+.hero h1 { color: var(--white); font-size: clamp(34px, 4.5vw, 52px); margin-bottom: 20px; }
+.hero h1 em { font-style: normal; color: var(--blue-light); font-family: var(--font-serif); }
+.hero .lead { color: #E2E8F0; margin-bottom: 32px; font-size: 16px; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.hero-meta { font-size: 12px; color: #CBD5E1; margin-top: 16px; }
+.hero-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 28px; }
+.hero-card .card-eyebrow { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--blue-light); margin-bottom: 14px; }
+.hero-card .stat-row { display: flex; flex-direction: column; gap: 14px; }
+.hero-card .stat-item { display: flex; align-items: center; gap: 14px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.hero-card .stat-item:last-child { border-bottom: none; padding-bottom: 0; }
+.hero-card .stat-icon { width: 40px; height: 40px; border-radius: 6px; background: rgba(29,78,216,0.30); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; line-height: 1; }
+.hero-card .stat-num { font-size: 20px; font-weight: 800; color: var(--white); line-height: 1; }
+.hero-card .stat-label { font-size: 11px; color: #CBD5E1; margin-top: 2px; }
+
+.section-problem { padding: var(--section-pad); background: var(--white); }
+.problem-intro { max-width: 640px; margin-bottom: 48px; }
+.problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--grey-300); border-radius: 8px; overflow: hidden; }
+.problem-card { background: var(--white); padding: 32px 28px; }
+.problem-card .p-num { font-size: 11px; font-weight: 700; color: var(--blue-700); margin-bottom: 12px; letter-spacing: 0.08em; }
+.problem-card h3 { margin-bottom: 10px; font-size: 17px; }
+.problem-card p { font-size: 14px; }
+
+.section-cred { background: var(--navy-800); padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+.cred-inner { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+.cred-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #E2E8F0; padding-right: 40px; margin-right: 40px; border-right: 1px solid rgba(255,255,255,0.12); white-space: nowrap; }
+.cred-stats { display: flex; gap: 48px; flex-wrap: wrap; flex: 1; }
+.cred-stat { text-align: center; }
+.cred-stat .num { font-size: 28px; font-weight: 800; color: var(--blue-light); line-height: 1; margin-bottom: 4px; }
+.cred-stat .num span { color: var(--white); }
+.cred-stat .lbl { font-size: 11px; color: #CBD5E1; font-weight: 500; }
+
+.section-services { padding: var(--section-pad); background: var(--grey-50); }
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.service-card { background: var(--white); border: 1px solid var(--grey-300); border-radius: 8px; padding: 32px 28px; transition: border-color 0.2s, box-shadow 0.2s; position: relative; overflow: hidden; cursor: pointer; }
+.service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--blue-700); transform: scaleX(0); transition: transform 0.2s; transform-origin: left; }
+.service-card:hover { border-color: var(--blue-100); box-shadow: 0 4px 20px rgba(29,78,216,0.08); }
+.service-card:hover::before { transform: scaleX(1); }
+.service-icon { width: 44px; height: 44px; background: var(--blue-100); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; }
+.service-card h3 { margin-bottom: 10px; font-size: 17px; }
+.service-card p { font-size: 14px; margin-bottom: 20px; }
+.service-card .link { font-size: 13px; font-weight: 700; color: var(--blue-700); text-decoration: none; display: flex; align-items: center; gap: 4px; }
+.service-card .link:hover { color: var(--blue-600); }
+
+.section-diag-cta { background: var(--navy-900); padding: 72px 0; position: relative; overflow: hidden; }
+.section-diag-cta::before { content: ''; position: absolute; bottom: -60px; right: -60px; width: 400px; height: 400px; border-radius: 50%; background: rgba(29,78,216,0.07); pointer-events: none; }
+.diag-cta-inner { display: grid; grid-template-columns: 1fr 320px; gap: 64px; align-items: center; }
+.diag-cta-left h2 { color: var(--white); margin-bottom: 12px; }
+.diag-cta-left p { color: #E2E8F0; font-size: 15px; margin-bottom: 24px; }
+.diag-cta-right { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 28px; }
+.diag-cta-right .domain-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.diag-cta-right .domain-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+.diag-cta-right .domain-name { color: #E2E8F0; }
+.diag-cta-right .domain-weight { color: var(--blue-light); font-weight: 700; font-size: 11px; }
+
+.section-founder { padding: var(--section-pad); background: var(--white); }
+.founder-grid { display: grid; grid-template-columns: 380px 1fr; gap: 64px; align-items: center; }
+.founder-img { border-radius: 10px; height: 420px; overflow: hidden; position: relative; border: 1px solid var(--grey-300); }
+.founder-img::after { content: ''; position: absolute; bottom: 0; left: 0; width: 4px; height: 100%; background: var(--blue-700); }
+.founder-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.founder-copy .eyebrow { margin-bottom: 8px; }
+.founder-copy h2 { margin-bottom: 16px; }
+.founder-copy .lead { margin-bottom: 20px; }
+.founder-copy p { margin-bottom: 16px; }
+.founder-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+
+/* ============================================================
+   SERVICES PAGE
+   ============================================================ */
+.service-full { padding: 64px 0; border-bottom: 1px solid var(--grey-100); }
+.service-full:last-child { border-bottom: none; }
+.service-full-grid { display: grid; grid-template-columns: 1fr 360px; gap: 64px; align-items: start; }
+.service-full-number { font-size: 11px; font-weight: 700; color: var(--blue-700); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.service-full h2 { margin-bottom: 16px; }
+.service-full .lead { margin-bottom: 28px; }
+.deliverables { margin-top: 24px; }
+.deliverables-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--grey-500); margin-bottom: 14px; }
+.deliverable-item { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+.deliverable-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue-700); margin-top: 7px; flex-shrink: 0; }
+.deliverable-item p { font-size: 14px; color: var(--grey-700); margin: 0; line-height: 1.6; }
+
+/* ============================================================
+   ACCORDION
+   ============================================================ */
+.service-sidebar { background: var(--grey-50); border: 1px solid var(--grey-300); border-radius: 10px; padding: 8px 24px 16px; }
+.accordion-item { border-bottom: 1px solid var(--grey-300); }
+.accordion-item:last-child { border-bottom: none; }
+.accordion-header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 14px 0; background: none; border: none; cursor: pointer; font-family: var(--font-primary); text-align: left; gap: 8px; }
+.accordion-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--grey-500); }
+.accordion-arrow { font-size: 18px; color: var(--blue-700); transition: transform 0.2s; line-height: 1; flex-shrink: 0; }
+.accordion-item.open .accordion-arrow { transform: rotate(90deg); }
+.accordion-body { display: none; padding-bottom: 18px; }
+.accordion-item.open .accordion-body { display: block; }
+.accordion-body p { font-size: 14px; color: var(--grey-700); line-height: 1.65; margin-bottom: 10px; }
+.accordion-body p:last-of-type { margin-bottom: 0; }
+.entry-questions { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.entry-q { font-size: 13px; color: var(--grey-800); padding: 9px 14px; background: var(--white); border-left: 3px solid var(--blue-700); border-radius: 0 4px 4px 0; line-height: 1.5; font-style: italic; }
+
+/* ============================================================
+   DIAGNOSTIC PAGE
+   ============================================================ */
+.diag-path-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 56px; }
+.diag-card { background: var(--white); border: 1px solid var(--grey-300); border-radius: 10px; padding: 36px; }
+.diag-card.featured { border-color: var(--blue-700); border-width: 2px; position: relative; }
+.diag-card.featured::before { content: 'START HERE'; position: absolute; top: -1px; left: 32px; background: var(--blue-700); color: white; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; padding: 3px 10px; border-radius: 0 0 4px 4px; }
+.diag-card-tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 3px; margin-bottom: 16px; }
+.diag-card-tag.free { background: var(--blue-100); color: var(--blue-700); }
+.diag-card-tag.full { background: var(--navy-900); color: #93C5FD; }
+.diag-card h2 { font-size: 24px; margin-bottom: 6px; }
+.diag-card .diag-meta { font-size: 13px; color: var(--grey-500); margin-bottom: 20px; }
+.diag-card hr { border: none; border-top: 1px solid var(--grey-300); margin: 20px 0; }
+.diag-card p { font-size: 14px; color: var(--grey-700); line-height: 1.7; margin-bottom: 14px; }
+.diag-card p:last-of-type { margin-bottom: 20px; }
+.diag-include { background: var(--grey-50); border-radius: 6px; padding: 14px 16px; margin-bottom: 20px; }
+.diag-include p { font-size: 13px; color: var(--grey-700); margin: 0; line-height: 1.6; }
+.carryover-note { font-size: 12px; color: var(--blue-700); font-weight: 600; margin-top: 12px; display: flex; gap: 6px; align-items: flex-start; }
+.domain-overview { padding: 56px 0; background: var(--grey-50); }
+.domain-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 28px; }
+.domain-tile { background: var(--white); border: 1px solid var(--grey-300); border-radius: 8px; padding: 20px 16px; }
+.domain-tile .d-weight { font-size: 22px; font-weight: 800; color: var(--blue-700); line-height: 1; margin-bottom: 6px; }
+.domain-tile .d-name { font-size: 13px; font-weight: 700; color: var(--grey-900); margin-bottom: 6px; }
+.domain-tile .d-desc { font-size: 12px; color: var(--grey-500); line-height: 1.5; }
+
+/* ============================================================
+   ABOUT PAGE
+   ============================================================ */
+.about-hero-grid { display: grid; grid-template-columns: 360px 1fr; gap: 64px; align-items: center; padding: 72px 0 56px; }
+.about-hero-img { border-radius: 10px; height: 380px; overflow: hidden; position: relative; border: 1px solid var(--grey-300); }
+.about-hero-img::after { content: ''; position: absolute; bottom: 0; left: 0; width: 4px; height: 100%; background: var(--blue-700); }
+.about-hero-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.about-hero-copy h1 { margin-bottom: 6px; }
+.about-hero-copy .founder-title { font-size: 14px; font-weight: 600; color: var(--blue-700); margin-bottom: 20px; letter-spacing: 0.02em; }
+.about-hero-copy .lead { margin-bottom: 20px; }
+.about-hero-copy p { margin-bottom: 16px; }
+.what-built-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 36px; }
+.built-card { padding: 28px; background: var(--grey-50); border-radius: 8px; border: 1px solid var(--grey-300); }
+.built-card .b-num { font-size: 11px; font-weight: 700; color: var(--blue-700); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+.built-card h3 { font-size: 16px; margin-bottom: 10px; }
+.built-card p { font-size: 14px; color: var(--grey-700); line-height: 1.65; }
+.why-fcg { background: var(--navy-800); padding: 64px 0; }
+.why-fcg-inner { display: grid; grid-template-columns: 1fr 480px; gap: 64px; align-items: center; }
+.why-fcg h2 { color: var(--white); margin-bottom: 16px; }
+.why-fcg p { color: #E2E8F0; font-size: 15px; line-height: 1.75; margin-bottom: 14px; }
+.why-fcg p:last-child { margin-bottom: 0; }
+.why-stats { display: flex; flex-direction: column; gap: 20px; }
+.why-stat-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 20px 24px; }
+.why-stat-card .ws-num { font-size: 32px; font-weight: 800; color: var(--white); line-height: 1; margin-bottom: 4px; }
+.why-stat-card .ws-num span { color: var(--blue-light); }
+.why-stat-card .ws-label { font-size: 13px; color: #CBD5E1; }
+
+/* ============================================================
+   CONTACT PAGE
+   ============================================================ */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 64px 0; }
+.contact-card { background: var(--white); border: 1px solid var(--grey-300); border-radius: 10px; padding: 36px; }
+.contact-card.featured { border-color: var(--blue-700); border-width: 2px; }
+.contact-card .c-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue-700); margin-bottom: 8px; }
+.contact-card h2 { font-size: 22px; margin-bottom: 8px; }
+.contact-card .c-sub { font-size: 14px; color: var(--grey-500); margin-bottom: 24px; }
+.contact-card hr { border: none; border-top: 1px solid var(--grey-300); margin: 20px 0; }
+.contact-card p { font-size: 14px; color: var(--grey-700); line-height: 1.7; margin-bottom: 14px; }
+.cal-embed { background: var(--grey-50); border: 1px solid var(--grey-300); border-radius: 8px; min-height: 220px; display: flex; align-items: center; justify-content: center; color: var(--grey-500); font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+.form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.form-field label { font-size: 12px; font-weight: 600; color: var(--grey-800); }
+.form-field input, .form-field select, .form-field textarea { border: 1px solid var(--grey-300); border-radius: 4px; padding: 10px 14px; font-family: var(--font-primary); font-size: 14px; color: var(--grey-800); background: var(--grey-50); outline: none; transition: border-color 0.15s; }
+.form-field input:focus, .form-field textarea:focus { border-color: var(--blue-700); background: var(--white); }
+.form-field textarea { height: 100px; resize: none; }
+.contact-info-bar { background: var(--grey-50); border-top: 1px solid var(--grey-300); padding: 40px 0; }
+.contact-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.contact-info-item { text-align: center; padding: 24px; background: var(--white); border: 1px solid var(--grey-300); border-radius: 8px; }
+.contact-info-item .ci-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blue-700); margin-bottom: 8px; }
+.contact-info-item p { font-size: 14px; color: var(--grey-800); font-weight: 500; margin: 0; }
+.contact-info-item .ci-sub { font-size: 12px; color: var(--grey-500); margin-top: 4px; }
+
+/* ============================================================
+   RESPONSIVE — Tablet (max 1024px)
+   ============================================================ */
+@media (max-width: 1024px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-card { display: none; }
+  .diag-cta-inner { grid-template-columns: 1fr; }
+  .diag-cta-right { display: none; }
+  .founder-grid { grid-template-columns: 1fr; }
+  .founder-img { height: 280px; }
+  .service-full-grid { grid-template-columns: 1fr; }
+  .why-fcg-inner { grid-template-columns: 1fr; }
+  .why-stats { flex-direction: row; flex-wrap: wrap; gap: 12px; }
+  .why-stat-card { flex: 1 1 200px; }
+  .about-hero-grid { grid-template-columns: 1fr; }
+  .domain-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ============================================================
+   RESPONSIVE — Mobile (max 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  :root { --section-pad: 48px 0; }
+  .container { padding: 0 20px; }
+  .site-nav .nav-links { display: none; }
+  .site-nav .nav-cta { display: none; }
+  .site-nav .inner { padding: 0 20px; }
+  .nav-hamburger { display: flex; }
+  .mobile-menu.open { display: block; }
+  .hero { padding: 56px 0 48px; }
+  .hero-card { display: none; }
+  .hero h1 { font-size: clamp(28px, 7vw, 38px); }
+  .hero .lead { font-size: 15px; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn { justify-content: center; }
+  .cred-inner { flex-direction: column; gap: 20px; }
+  .cred-label { border-right: none; padding-right: 0; margin-right: 0; border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 12px; }
+  .cred-stats { gap: 20px; justify-content: center; }
+  .problem-grid { grid-template-columns: 1fr; gap: 1px; }
+  .services-grid { grid-template-columns: 1fr; }
+  .diag-cta-inner { grid-template-columns: 1fr; }
+  .diag-cta-right { display: none; }
+  .founder-grid { grid-template-columns: 1fr; }
+  .founder-img { height: 300px; }
+  .service-full-grid { grid-template-columns: 1fr; }
+  .diag-path-grid { grid-template-columns: 1fr; }
+  .domain-grid { grid-template-columns: repeat(2, 1fr); }
+  .what-built-grid { grid-template-columns: 1fr; }
+  .why-fcg-inner { grid-template-columns: 1fr; }
+  .why-stats { flex-direction: column; }
+  .about-hero-grid { grid-template-columns: 1fr; }
+  .about-hero-img { height: 300px; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .contact-info-grid { grid-template-columns: 1fr; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+  h2, .h2 { font-size: clamp(20px, 5vw, 28px); }
+  .lead { font-size: 16px; }
+  .page-header { padding: 48px 0 40px; }
+  .diag-card { padding: 24px 20px; }
+  .diag-card.featured::before { left: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- =================================================================
+     SHARED NAV (appears on all pages)
+     In Framer: build once as a layout component
+     ================================================================= -->
+<nav class="site-nav" id="main-nav">
+  <div class="inner">
+    <a class="logo" onclick="showPage('home')">Foresight <span>|</span> Consulting Group</a>
+    <div class="nav-links">
+      <a onclick="showPage('services')" id="nav-services">Services</a>
+      <a onclick="showPage('diagnostic')" id="nav-diagnostic">Diagnostic</a>
+      <a onclick="showPage('about')" id="nav-about">About</a>
+      <a onclick="showPage('contact')" id="nav-contact">Contact</a>
+    </div>
+    <a class="nav-cta btn-arrow" onclick="showPage('diagnostic')">Take the Assessment</a>
+    <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a onclick="showPage('services'); closeMobileMenu()">Services</a>
+    <a onclick="showPage('diagnostic'); closeMobileMenu()">Diagnostic</a>
+    <a onclick="showPage('about'); closeMobileMenu()">About</a>
+    <a onclick="showPage('contact'); closeMobileMenu()">Contact</a>
+    <a class="mobile-cta" onclick="showPage('diagnostic'); closeMobileMenu()">Take the Free Assessment &rarr;</a>
+  </div>
+</nav>
+
+
+<!-- =================================================================
+     PAGE 1: HOME
+     ================================================================= -->
+<div class="panel active" id="home">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-tag">AI Governance &amp; Technology Strategy</div>
+          <h1>AI is moving fast.<br><em>Your governance structure</em><br>needs to keep up.</h1>
+          <p class="lead">Foresight Consulting Group helps organizations assess the gap between where they are and where they need to be — and build the structure to close it responsibly.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-arrow" onclick="showPage('diagnostic')">Take the Free Assessment</a>
+            <a class="btn btn-outline" onclick="showPage('contact')">Book a 30-Minute Session</a>
+          </div>
+          <p class="hero-meta">14-question diagnostic &nbsp;·&nbsp; No login required &nbsp;·&nbsp; Results to your inbox</p>
+        </div>
+        <div class="hero-card" aria-hidden="true">
+          <div class="card-eyebrow">Founding Principal — Track Record</div>
+          <div class="stat-row">
+            <div class="stat-item">
+              <div class="stat-icon">📊</div>
+              <div>
+                <div class="stat-num">$280<span style="font-size:14px;font-weight:600;">M+</span></div>
+                <div class="stat-label">AI portfolio governed annually</div>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon">🏛️</div>
+              <div>
+                <div class="stat-num">20<span style="font-size:14px;font-weight:600;">+ yrs</span></div>
+                <div class="stat-label">Enterprise technology leadership</div>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon">👥</div>
+              <div>
+                <div class="stat-num">9<span style="font-size:14px;font-weight:600;">M+</span></div>
+                <div class="stat-label">Clients covered under AI governance</div>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon">🎓</div>
+              <div>
+                <div class="stat-num" style="font-size:16px;font-weight:800;">GenAI Certified</div>
+                <div class="stat-label">Purdue Executive Program, 2026</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Credibility Bar -->
+  <section class="section-cred">
+    <div class="container">
+      <div class="cred-inner">
+        <div class="cred-label">Built on real execution</div>
+        <div class="cred-stats">
+          <div class="cred-stat"><div class="num">50<span>%</span></div><div class="lbl">Governance overhead reduced</div></div>
+          <div class="cred-stat"><div class="num">63<span>%</span></div><div class="lbl">Portfolio alignment improved</div></div>
+          <div class="cred-stat"><div class="num">68<span>%</span></div><div class="lbl">AI initiative cycle-time cut</div></div>
+          <div class="cred-stat"><div class="num">Fortune<span style="font-size:14px;"> 200</span></div><div class="lbl">Financial services background</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Statement -->
+  <section class="section-problem">
+    <div class="container">
+      <div class="problem-intro">
+        <div class="eyebrow">Why Organizations Come to FCG</div>
+        <h2>Most organizations are further behind than they think.</h2>
+        <p class="lead" style="margin-top:12px;">AI deployment is accelerating. The governance structures, investment frameworks, and workforce capabilities required to sustain it are not. The gap between current state and target state is where the real risk lives.</p>
+      </div>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="p-num">01</div>
+          <h3>Exposure is growing faster than structure.</h3>
+          <p>Organizations are using AI in consequential decisions without documented governance, model inventories, or defensible audit trails. The liability is not hypothetical.</p>
+        </div>
+        <div class="problem-card">
+          <div class="p-num">02</div>
+          <h3>Adoption is outpacing readiness.</h3>
+          <p>Tools are deployed. Training is minimal. Adoption is assumed rather than designed. The result is cognitive overload, uneven usage, and ROI that never materializes.</p>
+        </div>
+        <div class="problem-card">
+          <div class="p-num">03</div>
+          <h3>The gap is structural, not technical.</h3>
+          <p>The question is not which AI tool you chose. It is whether your organization has the governance, alignment, and capability to use it responsibly at scale.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Preview -->
+  <section class="section-services" id="services-preview">
+    <div class="container">
+      <div class="section-header">
+        <div class="eyebrow">What We Do</div>
+        <h2>Three ways FCG closes the gap.</h2>
+        <p class="lead" style="margin-top:8px; max-width:580px;">Each engagement is scoped, structured, and outcome-defined. No retainer ambiguity. No scope creep. Every service is designed to produce a measurable change in your current state.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card" onclick="showPage('services')">
+          <div class="service-icon" aria-hidden="true" role="presentation">⚖️</div>
+          <h3>AI Governance Advisory</h3>
+          <p>Policy, risk tiering, model inventory, and board-ready reporting structures that protect your organization and satisfy examiner scrutiny.</p>
+          <span class="link" aria-label="Learn more about AI Governance Advisory">Learn more &#8594;</span>
+        </div>
+        <div class="service-card" onclick="showPage('services')">
+          <div class="service-icon" aria-hidden="true" role="presentation">🧭</div>
+          <h3>Technology Strategy &amp; Alignment</h3>
+          <p>Current-to-target state assessment, investment prioritization, and the operating model that closes the gap between technology ambition and accountable execution.</p>
+          <span class="link" aria-label="Learn more about Technology Strategy and Alignment">Learn more &#8594;</span>
+        </div>
+        <div class="service-card" onclick="showPage('services')">
+          <div class="service-icon" aria-hidden="true" role="presentation">🎓</div>
+          <h3>AI Literacy &amp; Adoption (LEAP)</h3>
+          <p>Role-specific AI literacy delivered to leadership and operational teams. Practical, immediately applicable, and designed to move people from learning to confident application.</p>
+          <span class="link" aria-label="Learn more about AI Literacy and Adoption LEAP program">Learn more &#8594;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Diagnostic CTA -->
+  <section class="section-diag-cta">
+    <div class="container">
+      <div class="diag-cta-inner">
+        <div class="diag-cta-left">
+          <div class="eyebrow eyebrow-light">Free AI Readiness Diagnostic</div>
+          <h2>Find out where your governance gaps are.</h2>
+          <p>14 questions across seven governance domains. You will receive a personalized results summary and one recommended next step — delivered to your inbox within minutes of completing the assessment.</p>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <a class="btn btn-primary btn-arrow" onclick="showPage('diagnostic')">Begin the Free Assessment</a>
+            <a class="btn btn-outline" onclick="showPage('contact')">Book a Session Instead</a>
+          </div>
+          <p style="font-size:12px;color:#CBD5E1;margin-top:12px;">No login required &nbsp;·&nbsp; No sales call triggered &nbsp;·&nbsp; 5 minutes</p>
+        </div>
+        <div class="diag-cta-right" aria-hidden="true">
+          <div class="eyebrow eyebrow-light" style="margin-bottom:4px;">Seven Domains Assessed</div>
+          <hr class="divider-dark" style="margin:12px 0;">
+          <div class="domain-list">
+            <div class="domain-item"><span class="domain-name">Data Governance</span><span class="domain-weight">25%</span></div>
+            <div class="domain-item"><span class="domain-name">Model Risk Readiness</span><span class="domain-weight">25%</span></div>
+            <div class="domain-item"><span class="domain-name">Strategic Alignment &amp; ROI</span><span class="domain-weight">15%</span></div>
+            <div class="domain-item"><span class="domain-name">Cyber &amp; Security</span><span class="domain-weight">10%</span></div>
+            <div class="domain-item"><span class="domain-name">Cultural Readiness</span><span class="domain-weight">10%</span></div>
+            <div class="domain-item"><span class="domain-name">AI Skills &amp; Talent</span><span class="domain-weight">10%</span></div>
+            <div class="domain-item"><span class="domain-name">Ethical &amp; Responsible AI</span><span class="domain-weight">5%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Founder Strip -->
+  <section class="section-founder">
+    <div class="container">
+      <div class="founder-grid">
+        <div class="founder-img">
+          <!-- FRAMER: Upload Aragon-Favorites-Lena-Harness-20.jpeg as asset and replace src -->
+          <img src="/Users/lrobinson/Library/Mobile Documents/com~apple~CloudDocs/Aragon-Favorites-Headshots-Lena-Harness-2025-11-13/Aragon-Favorites-Lena-Harness-20.jpeg" alt="Lena Harness, Founder and Principal, Foresight Consulting Group" onerror="this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;color:#64748B;font-size:13px;font-weight:600;\'>[ Professional Photo ]</div>'">
+        </div>
+        <div class="founder-copy">
+          <div class="eyebrow">Founder &amp; Principal</div>
+          <h2>Built from the inside out.</h2>
+          <p class="lead">I solve the problem every large technology organization eventually faces: a strategy that cannot execute, a portfolio that cannot be seen, and governance that slows everything down instead of accelerating it.</p>
+          <p>For more than 20 years I built and ran the systems that fix that — in Fortune 200 financial services, in Federal Reserve-regulated banking environments, and now through Foresight Consulting Group.</p>
+          <p>Most AI governance advice comes from firms that have never had to answer to a regulator, defend a governance structure in an examination, or build a function from inception inside a regulated organization. FCG was built on the inside. That is a different kind of knowledge.</p>
+          <div class="founder-badges">
+            <span class="badge">20+ Years Enterprise Leadership</span>
+            <span class="badge">$280M+ AI Portfolio Governed</span>
+            <span class="badge">Purdue GenAI Certification</span>
+            <span class="badge">NIST AI RMF Aligned</span>
+            <span class="badge">Fortune 200 Background</span>
+          </div>
+          <div style="margin-top:28px;">
+            <a class="btn btn-outline-dark" onclick="showPage('about')">Full Profile &amp; Background &#8594;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">Foresight <span>|</span> Consulting Group</div>
+          <div class="footer-meta">&copy; 2026 Foresight Consulting Group LLC &nbsp;&middot;&nbsp; foresight-consult.com &nbsp;&middot;&nbsp; St. Louis, Missouri</div>
+        </div>
+        <div class="footer-links">
+          <a onclick="showPage('services')">Services</a>
+          <a onclick="showPage('diagnostic')">Diagnostic</a>
+          <a onclick="showPage('about')">About</a>
+          <a onclick="showPage('contact')">Contact</a>
+          <a href="https://linkedin.com/in/lenaharness" target="_blank" rel="noopener">LinkedIn</a>
+          <a onclick="showPage('contact')">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- end home -->
+
+
+<!-- =================================================================
+     PAGE 2: SERVICES
+     ================================================================= -->
+<div class="panel" id="services">
+
+  <div class="page-header">
+    <div class="container">
+      <div class="eyebrow eyebrow-light">Services</div>
+      <h1>What we do. What you get.</h1>
+      <p class="lead">FCG engagements are scoped, structured, and outcome-defined. Every service begins with a clear picture of your current state and ends with a measurable change to it.</p>
+    </div>
+  </div>
+
+  <!-- Three Services Intro -->
+  <section class="section-white" style="padding-bottom:0;">
+    <div class="container">
+      <div style="max-width:680px; padding-bottom:40px; border-bottom:1px solid var(--grey-300);">
+        <div class="eyebrow">Three Services. One System.</div>
+        <h2>Protect the organization. Point it in the right direction. Build the people to get there.</h2>
+        <p class="lead" style="margin-top:12px;">AI governance without strategy is compliance theater. Strategy without governance is risk at scale. Neither works without people who can actually execute. The three FCG services are designed as a system — each one stands alone, and each one makes the others more effective.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service 01: AI Governance -->
+  <section class="section-white" id="ai-governance">
+    <div class="container">
+      <div class="service-full">
+        <div class="service-full-grid">
+          <div>
+            <div class="service-full-number">Service 01</div>
+            <h2>AI Governance Advisory</h2>
+            <p class="lead">Most organizations are using AI in consequential decisions without a documented governance structure, a model inventory, or a defensible audit trail. FCG builds that structure — from policy to board-ready reporting — before the gap becomes a liability.</p>
+            <p>This engagement is for organizations that are already using AI, evaluating AI deployment, or facing regulatory scrutiny of existing AI use. The output is not a framework document. It is an operating governance model that your team can maintain and your leadership can defend.</p>
+            <div class="deliverables">
+              <div class="deliverables-label">What you will have when we are done</div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>AI use case inventory with four-tier risk classification — distinguishing predictive from realized risk</p></div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Governance policy aligned to NIST AI RMF and applicable regulatory guidance (SEC, FINRA, or industry-specific)</p></div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Model risk escalation protocol with defined thresholds for human review</p></div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Board and examiner-ready reporting template with defined cadence</p></div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Reversibility classification for each active AI use case</p></div>
+            </div>
+          </div>
+          <div class="service-sidebar">
+            <div class="accordion-item open">
+              <button class="accordion-header" onclick="toggleAccordion(this)">
+                <span class="accordion-label">Who this is for</span>
+                <span class="accordion-arrow">&#8250;</span>
+              </button>
+              <div class="accordion-body">
+                <p>CIOs, CCOs, and CROs at organizations with 50 or more employees that are deploying AI in client-facing, credit, compliance, or operational workflows. Especially relevant for regulated industries — financial services, healthcare, legal — where examiner scrutiny of AI is accelerating.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header" onclick="toggleAccordion(this)">
+                <span class="accordion-label">Do any of these sound familiar?</span>
+                <span class="accordion-arrow">&#8250;</span>
+              </button>
+              <div class="accordion-body">
+                <div class="entry-questions">
+                  <div class="entry-q">"We are using AI but have no documented governance structure."</div>
+                  <div class="entry-q">"We could not produce an AI use case inventory for an examiner today."</div>
+                  <div class="entry-q">"Leadership is asking for board-level AI reporting and we do not have a framework for it."</div>
+                  <div class="entry-q">"We know there is regulatory risk in our AI deployment — we just have not addressed it formally."</div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header" onclick="toggleAccordion(this)">
+                <span class="accordion-label">Engagement format</span>
+                <span class="accordion-arrow">&#8250;</span>
+              </button>
+              <div class="accordion-body">
+                <p>Advisory engagement. Scoped after a 30-minute discovery session. Delivered over four to eight weeks depending on organization size and complexity.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header" onclick="toggleAccordion(this)">
+                <span class="accordion-label">Starting point</span>
+                <span class="accordion-arrow">&#8250;</span>
+              </button>
+              <div class="accordion-body">
+                <p>The AI Readiness Diagnostic surfaces your governance gaps before the engagement begins. Most clients complete it before the first session.</p>
+                <div style="margin-top:14px;">
+                  <a class="btn btn-primary btn-arrow" onclick="showPage('diagnostic')" style="width:100%; justify-content:center;">Take the Free Diagnostic</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service 02: Tech Strategy -->
+  <section class="section-light" id="tech-strategy">
+    <div class="container">
+      <div class="service-full">
+        <div class="service-full-grid">
+          <div>
+            <div class="service-full-number">Service 02</div>
+            <h2>Technology Strategy &amp; Alignment</h2>
+            <p class="lead">Technology investment without alignment is experimentation at scale. Organizations consistently report a gap between the technology they fund and the business outcomes they actually achieve. FCG closes that gap by building the current-to-target state framework that connects technology decisions to measurable business results.</p>
+            <p>This engagement is for organizations where technology spending decisions are made informally, tracked inconsistently, or disconnected from strategic priorities. It is also for organizations undergoing process optimization — identifying where current workflows are creating friction, defining the target state, and building a structured path to get there.</p>
+            <div class="deliverables">
+              <div class="deliverables-label">What you will have when we are done</div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Current-state assessment and gap analysis — where you are, where you need to be, and what is standing between them</p></div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Investment prioritization framework tied to business outcomes, not just technical merit</p></div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Executive reporting cadence and KPI structure that makes technology performance visible to leadership</p></div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Pilot-to-production decision criteria — so experiments become decisions, not permanent pilots</p></div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Process optimization recommendations with options and tradeoffs, not just a single prescribed path</p></div>
+            </div>
+          </div>
+          <div class="service-sidebar">
+            <div class="accordion-item open">
+              <button class="accordion-header" onclick="toggleAccordion(this)">
+                <span class="accordion-label">Who this is for</span>
+                <span class="accordion-arrow">&#8250;</span>
+              </button>
+              <div class="accordion-body">
+                <p>CFOs and COOs at growing organizations — from small businesses investing in technology for the first time to mid-market firms with established but uncoordinated technology portfolios. Also relevant to CIOs in organizations where technology strategy and business strategy are not visibly connected.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header" onclick="toggleAccordion(this)">
+                <span class="accordion-label">Do any of these sound familiar?</span>
+                <span class="accordion-arrow">&#8250;</span>
+              </button>
+              <div class="accordion-body">
+                <div class="entry-questions">
+                  <div class="entry-q">"We are spending on technology but cannot measure what we are getting from it."</div>
+                  <div class="entry-q">"Technology decisions get made informally and are not connected to business priorities."</div>
+                  <div class="entry-q">"We have no clear picture of where we are vs. where we need to be."</div>
+                  <div class="entry-q">"Our current processes have friction we have learned to work around, not fix."</div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header" onclick="toggleAccordion(this)">
+                <span class="accordion-label">Engagement format</span>
+                <span class="accordion-arrow">&#8250;</span>
+              </button>
+              <div class="accordion-body">
+                <p>Advisory engagement. Scoped after a 30-minute discovery session. Delivered over four to ten weeks depending on scope and number of processes assessed.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header" onclick="toggleAccordion(this)">
+                <span class="accordion-label">Starting point</span>
+                <span class="accordion-arrow">&#8250;</span>
+              </button>
+              <div class="accordion-body">
+                <p>A 30-minute discovery session. Bring your most pressing challenge — we will scope from there.</p>
+                <div style="margin-top:14px;">
+                  <a class="btn btn-outline-dark btn-arrow" onclick="showPage('contact')" style="width:100%; justify-content:center;">Book a Discovery Session</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service 03: LEAP -->
+  <section class="section-white" id="leap">
+    <div class="container">
+      <div class="service-full">
+        <div class="service-full-grid">
+          <div>
+            <div class="service-full-number">Service 03</div>
+            <h2>AI Literacy &amp; Adoption (LEAP)</h2>
+            <p class="lead">Organizations stop at learning instead of designing for application. Tools are introduced. Training is delivered. Usage is tracked. Impact is not measured. The result is cognitive overload without productivity gains, and AI investments that cannot demonstrate ROI.</p>
+            <p>LEAP is a structured AI literacy program delivered to leadership and operational teams. It is role-specific, immediately applicable, and designed around one outcome: moving people from understanding AI to using it confidently in real work. Not more training. A bridge from learning to application.</p>
+            <div class="deliverables">
+              <div class="deliverables-label">What you will have when we are done</div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Role-differentiated AI literacy curriculum — executives, managers, and individual contributors each receive what is relevant to their work, not a generic overview</p></div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Practical application exercises tied directly to real workflows in your organization</p></div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Manager enablement guide for sustaining adoption after the program ends</p></div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Pre- and post-literacy assessment to measure actual capability change, not just completion</p></div>
+              <div class="deliverable-item"><div class="deliverable-dot"></div><p>Defined "what we are removing to make room for this" — the structural conditions that allow adoption to take hold</p></div>
+            </div>
+          </div>
+          <div class="service-sidebar">
+            <div class="accordion-item open">
+              <button class="accordion-header" onclick="toggleAccordion(this)">
+                <span class="accordion-label">Who this is for</span>
+                <span class="accordion-arrow">&#8250;</span>
+              </button>
+              <div class="accordion-body">
+                <p>COOs, CHROs, and Operations leaders at organizations where AI tools have been deployed but adoption is uneven, inconsistent, or creating more cognitive load than it eliminates. Also relevant to leadership teams preparing for an AI deployment and wanting to build readiness before rollout.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header" onclick="toggleAccordion(this)">
+                <span class="accordion-label">Do any of these sound familiar?</span>
+                <span class="accordion-arrow">&#8250;</span>
+              </button>
+              <div class="accordion-body">
+                <div class="entry-questions">
+                  <div class="entry-q">"We deployed the tools. People are not using them — or using them inconsistently."</div>
+                  <div class="entry-q">"Training happened. Adoption did not."</div>
+                  <div class="entry-q">"We added AI without removing anything. Now everyone is managing both."</div>
+                  <div class="entry-q">"We cannot measure whether our AI investments are changing how work actually gets done."</div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header" onclick="toggleAccordion(this)">
+                <span class="accordion-label">Engagement format</span>
+                <span class="accordion-arrow">&#8250;</span>
+              </button>
+              <div class="accordion-body">
+                <p>Workshop series or embedded advisory. Scoped to team size, existing tool environment, and current adoption baseline. Can be delivered standalone or alongside an AI Governance or Technology Strategy engagement.</p>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-header" onclick="toggleAccordion(this)">
+                <span class="accordion-label">Starting point</span>
+                <span class="accordion-arrow">&#8250;</span>
+              </button>
+              <div class="accordion-body">
+                <p>A 30-minute discovery session. We will assess your current adoption baseline and identify where the structural gaps are before scoping the program.</p>
+                <div style="margin-top:14px;">
+                  <a class="btn btn-outline-dark btn-arrow" onclick="showPage('contact')" style="width:100%; justify-content:center;">Book a Discovery Session</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA -->
+  <section class="section-diag-cta">
+    <div class="container" style="text-align:center; max-width:640px;">
+      <div class="eyebrow eyebrow-light">Not sure where to start?</div>
+      <h2 style="color:var(--white); margin-bottom:16px;">The diagnostic will tell you.</h2>
+      <p style="color:#E2E8F0; margin-bottom:28px;">14 questions across seven governance domains. The results will identify your highest-priority gaps and which FCG service addresses them first.</p>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <a class="btn btn-primary btn-arrow" onclick="showPage('diagnostic')">Begin the Free Assessment</a>
+        <a class="btn btn-outline" onclick="showPage('contact')">Book a 30-Minute Session</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">Foresight <span>|</span> Consulting Group</div>
+          <div class="footer-meta">&copy; 2026 Foresight Consulting Group LLC &nbsp;&middot;&nbsp; foresight-consult.com &nbsp;&middot;&nbsp; St. Louis, Missouri</div>
+        </div>
+        <div class="footer-links">
+          <a onclick="showPage('services')">Services</a><a onclick="showPage('diagnostic')">Diagnostic</a><a onclick="showPage('about')">About</a><a onclick="showPage('contact')">Contact</a><a href="https://linkedin.com/in/lenaharness" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- end services -->
+
+
+<!-- =================================================================
+     PAGE 3: DIAGNOSTIC
+     ================================================================= -->
+<div class="panel" id="diagnostic">
+
+  <div class="page-header">
+    <div class="container">
+      <div class="eyebrow eyebrow-light">AI Readiness Diagnostic</div>
+      <h1>Know where you stand before you decide what to do.</h1>
+      <p class="lead">Two assessment options. Both grounded in the same seven-domain governance framework aligned to NIST AI RMF. Start with the Quick Check. Go deeper when you are ready.</p>
+    </div>
+  </div>
+
+  <!-- Two Paths -->
+  <section class="section-white">
+    <div class="container">
+      <div class="diag-path-grid">
+
+        <div class="diag-card featured">
+          <span class="diag-card-tag free">Free &nbsp;&middot;&nbsp; Self-Serve &nbsp;&middot;&nbsp; No Login Required</span>
+          <h2>Quick Readiness Check</h2>
+          <p class="diag-meta">14 questions &nbsp;&middot;&nbsp; Approximately 5 minutes &nbsp;&middot;&nbsp; Results delivered to your inbox</p>
+          <hr>
+          <p>Two questions per governance domain. Each question includes a plain-language explanation of why it matters and what risk it surfaces.</p>
+          <p>You will receive a one-page readiness summary identifying your highest-priority gaps and one recommended next step — within minutes of completing the assessment. No sales call is triggered. No follow-up is required.</p>
+          <div class="diag-include">
+            <p><strong>Covers all seven domains:</strong> Data Governance &nbsp;&middot;&nbsp; Model Risk &nbsp;&middot;&nbsp; Strategic Alignment &amp; ROI &nbsp;&middot;&nbsp; Cyber &amp; Security &nbsp;&middot;&nbsp; Cultural Readiness &nbsp;&middot;&nbsp; AI Skills &amp; Talent &nbsp;&middot;&nbsp; Ethical &amp; Responsible AI</p>
+          </div>
+          <!-- FRAMER: Replace href with Vercel deployment URL for the Next.js diagnostic app -->
+          <a class="btn btn-primary btn-arrow" href="https://foresight-pxs24hhd2-lenaharness-ais-projects.vercel.app" target="_blank" target="_blank">Begin the Free Assessment</a>
+          <div class="carryover-note">&#8594; If you continue to the Complete Diagnostic, your answers carry forward. No rework.</div>
+        </div>
+
+        <div class="diag-card">
+          <span class="diag-card-tag full">Complete Assessment &nbsp;&middot;&nbsp; With Advisory Session</span>
+          <h2>Complete Diagnostic</h2>
+          <p class="diag-meta">56 questions &nbsp;&middot;&nbsp; Approximately 15 minutes &nbsp;&middot;&nbsp; Executive report with advisory review</p>
+          <hr>
+          <p>Eight questions per domain. Produces a scored executive report across all seven domains — including maturity level classification, red flag alerts for high-risk conditions, and cross-domain gap analysis that identifies where misalignment between domains is compounding risk.</p>
+          <p>The Complete Diagnostic is completed alongside a 30-minute FCG advisory session. We review your results together, identify where to focus first, and determine whether an engagement is the right next step.</p>
+          <div class="diag-include">
+            <p><strong>Report includes:</strong> Domain scores &nbsp;&middot;&nbsp; Maturity level (Initial through AI-Native) &nbsp;&middot;&nbsp; Red flag alerts &nbsp;&middot;&nbsp; Cross-domain gap analysis &nbsp;&middot;&nbsp; Prioritized recommendations</p>
+          </div>
+          <a class="btn btn-outline-dark btn-arrow" onclick="showPage('contact')">Book a 30-Minute Session</a>
+          <div class="carryover-note" style="color:var(--grey-500);">&#8594; Completed the Quick Check? Your answers carry forward automatically.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Seven Domains -->
+  <section class="domain-overview">
+    <div class="container">
+      <div class="eyebrow">What the Diagnostic Covers</div>
+      <h2>Seven domains. Each weighted by regulatory and operational impact.</h2>
+      <p class="lead" style="margin-top:12px; max-width:620px;">The scoring model is grounded in NIST AI RMF and weighted to reflect where governance failures most commonly create liability. The two highest-weighted domains — Data Governance and Model Risk — account for 50% of the total score.</p>
+      <div class="domain-grid">
+        <div class="domain-tile">
+          <div class="d-weight">25%</div>
+          <div class="d-name">Data Governance</div>
+          <div class="d-desc">Data quality, lineage, classification, and access controls for AI training and inference.</div>
+        </div>
+        <div class="domain-tile">
+          <div class="d-weight">25%</div>
+          <div class="d-name">Model Risk Readiness</div>
+          <div class="d-desc">Model validation, monitoring, version control, and escalation protocols for AI in production.</div>
+        </div>
+        <div class="domain-tile">
+          <div class="d-weight">15%</div>
+          <div class="d-name">Strategic Alignment &amp; ROI</div>
+          <div class="d-desc">Connection between AI investments and measurable business outcomes.</div>
+        </div>
+        <div class="domain-tile">
+          <div class="d-weight">10%</div>
+          <div class="d-name">Cyber &amp; Security</div>
+          <div class="d-desc">AI-specific threat surface, data exposure controls, and third-party model risk.</div>
+        </div>
+        <div class="domain-tile">
+          <div class="d-weight">10%</div>
+          <div class="d-name">Cultural Readiness</div>
+          <div class="d-desc">Leadership alignment, change capacity, and psychological safety around AI adoption.</div>
+        </div>
+        <div class="domain-tile">
+          <div class="d-weight">10%</div>
+          <div class="d-name">AI Skills &amp; Talent</div>
+          <div class="d-desc">Role-specific AI capability, training infrastructure, and adoption measurement.</div>
+        </div>
+        <div class="domain-tile">
+          <div class="d-weight">5%</div>
+          <div class="d-name">Ethical &amp; Responsible AI</div>
+          <div class="d-desc">Bias testing, fairness review, transparency standards, and accountability structures.</div>
+        </div>
+        <div class="domain-tile" style="background:var(--blue-700); border-color:var(--blue-700);">
+          <div class="d-weight" style="color:white;">0 - 100</div>
+          <div class="d-name" style="color:white;">Overall Score</div>
+          <div class="d-desc" style="color:#93C5FD;">Weighted composite across all seven domains. Five maturity levels: Initial, Reactive, Defined, Managed, and AI-Native.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Strip -->
+  <section class="section-white" style="padding:48px 0;">
+    <div class="container">
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:32px; max-width:880px;">
+        <div>
+          <div class="eyebrow">Who takes the diagnostic?</div>
+          <p style="font-size:14px;">Anyone responsible for AI strategy, governance, or adoption in their organization. Most commonly: CIOs, CCOs, COOs, and Operations leaders. No technical background required.</p>
+        </div>
+        <div>
+          <div class="eyebrow">What happens after?</div>
+          <p style="font-size:14px;">For the Quick Check: you receive your results by email. No follow-up contact is initiated. For the Complete Diagnostic: we schedule a 30-minute review session at a time you choose.</p>
+        </div>
+        <div>
+          <div class="eyebrow">Is the data confidential?</div>
+          <p style="font-size:14px;">Yes. Your responses are used only to generate your personalized report. They are not shared, sold, or used in aggregate benchmarking without consent.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">Foresight <span>|</span> Consulting Group</div>
+          <div class="footer-meta">&copy; 2026 Foresight Consulting Group LLC &nbsp;&middot;&nbsp; foresight-consult.com &nbsp;&middot;&nbsp; St. Louis, Missouri</div>
+        </div>
+        <div class="footer-links">
+          <a onclick="showPage('services')">Services</a><a onclick="showPage('diagnostic')">Diagnostic</a><a onclick="showPage('about')">About</a><a onclick="showPage('contact')">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- end diagnostic -->
+
+
+<!-- =================================================================
+     PAGE 4: ABOUT
+     ================================================================= -->
+<div class="panel" id="about">
+
+  <section class="section-white" style="padding-top:0; padding-bottom:0; background:var(--navy-900);">
+    <div class="container">
+      <div class="about-hero-grid">
+        <div class="about-hero-img">
+          <!-- FRAMER: Upload Aragon-Favorites-Lena-Harness-20.jpeg as asset and replace src -->
+          <img src="/Users/lrobinson/Library/Mobile Documents/com~apple~CloudDocs/Aragon-Favorites-Headshots-Lena-Harness-2025-11-13/Aragon-Favorites-Lena-Harness-20.jpeg" alt="Lena Harness, Founder and Principal, Foresight Consulting Group" onerror="this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;color:#64748B;font-size:13px;font-weight:600;background:#F1F5F9;\'>[ Professional Photo ]</div>'">
+        </div>
+        <div class="about-hero-copy">
+          <div class="eyebrow eyebrow-light">Founder &amp; Principal</div>
+          <h1 style="color:var(--white);">Lena Harness</h1>
+          <p class="founder-title">Technology Strategy &nbsp;&middot;&nbsp; AI Governance &nbsp;&middot;&nbsp; Enterprise Portfolio</p>
+          <p class="lead" style="color:#E2E8F0;">I solve the problem every large technology organization eventually faces: a strategy that cannot execute, a portfolio that cannot be seen, and governance that slows everything down instead of accelerating it.</p>
+          <p style="color:#CBD5E1;">For more than 20 years I built and ran the systems that fix that — in Fortune 200 financial services, in Federal Reserve-regulated banking environments, and now independently through Foresight Consulting Group.</p>
+          <p style="color:#CBD5E1;">I founded FCG to apply that operational depth where it matters most: in organizations navigating the gap between where they are and where they need to be — with AI, with technology strategy, and with the people who have to execute both.</p>
+          <div class="founder-badges" style="margin-top:20px;">
+            <span class="badge badge-dark">20+ Years Enterprise Leadership</span>
+            <span class="badge badge-dark">$280M+ AI Portfolio Governed</span>
+            <span class="badge badge-dark">Purdue GenAI Certification 2026</span>
+            <span class="badge badge-dark">NIST AI RMF Aligned</span>
+            <span class="badge badge-dark">Fortune 200 Background</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Track Record -->
+  <section class="section-light">
+    <div class="container">
+      <div class="eyebrow">Track Record</div>
+      <h2>What I have built — and what it produced.</h2>
+      <p class="lead" style="margin-top:12px; max-width:620px;">The credentials on this page are not aspirational. They are the direct results of work done inside regulated organizations with real accountability requirements.</p>
+      <div class="what-built-grid">
+        <div class="built-card">
+          <div class="b-num">01 — AI Governance</div>
+          <h3>Enterprise AI Governance from Inception</h3>
+          <p>Built the AI governance function at a Fortune 200 financial services firm from the ground up — the first of its kind at that organization. Governed the full AI portfolio across product, technology, legal, and compliance for a base of more than 9 million clients. Reduced governance overhead by 50%, cut AI initiative cycle-time by 68%, and improved portfolio alignment by 63%, while maintaining continuous regulatory compliance.</p>
+        </div>
+        <div class="built-card">
+          <div class="b-num">02 — Technology Portfolio</div>
+          <h3>EPMO and Portfolio Governance at Scale</h3>
+          <p>Led enterprise program management and technology portfolio governance across a multi-billion-dollar investment portfolio. Built the intake, prioritization, and outcome measurement structures that connected technology spending to measurable business results and made portfolio performance visible to executive leadership and the board on a defined cadence.</p>
+        </div>
+        <div class="built-card">
+          <div class="b-num">03 — Regulated Industry</div>
+          <h3>20+ Years Inside Regulated Environments</h3>
+          <p>Executive leadership roles across Fortune 200 financial services, Federal Reserve-regulated banking, and national brokerage environments — all with active SEC, FINRA, and federal compliance requirements. Direct experience building governance structures that had to hold up to examiners.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why FCG -->
+  <section class="why-fcg">
+    <div class="container">
+      <div class="why-fcg-inner">
+        <div>
+          <div class="eyebrow eyebrow-light">Why Foresight Consulting Group</div>
+          <h2>Advisory built on execution, not theory.</h2>
+          <p>Most AI governance advice comes from firms that have never had to answer to a regulator, defend a governance structure in an examination, or build a compliance function from inception inside a complex organization.</p>
+          <p>FCG was built on the inside. That is a fundamentally different kind of knowledge — not because it is more sophisticated, but because it is grounded in what actually happens when governance meets organizational reality.</p>
+          <p>The work I do with clients is not consulting from a distance. It is a direct transfer of the operational frameworks, governance structures, and strategic clarity that I spent 20 years building inside organizations that could not afford to get it wrong.</p>
+        </div>
+        <div class="why-stats">
+          <div class="why-stat-card">
+            <div class="ws-num">50<span>%</span></div>
+            <div class="ws-label">Governance overhead reduced at a Fortune 200 firm</div>
+          </div>
+          <div class="why-stat-card">
+            <div class="ws-num">68<span>%</span></div>
+            <div class="ws-label">AI initiative cycle-time cut while maintaining compliance</div>
+          </div>
+          <div class="why-stat-card">
+            <div class="ws-num">9<span>M+</span></div>
+            <div class="ws-label">Clients covered under AI governance structures I designed</div>
+          </div>
+          <div class="why-stat-card">
+            <div class="ws-num">$280<span>M+</span></div>
+            <div class="ws-label">AI portfolio governed annually at scale</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About CTA -->
+  <section class="section-diag-cta" style="padding:64px 0;">
+    <div class="container" style="text-align:center; max-width:560px;">
+      <div class="eyebrow eyebrow-light">Ready to find out where you stand?</div>
+      <h2 style="color:var(--white); margin-bottom:16px;">Start with the diagnostic. It takes five minutes.</h2>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <a class="btn btn-primary btn-arrow" onclick="showPage('diagnostic')">Take the Free Assessment</a>
+        <a class="btn btn-outline" onclick="showPage('contact')">Book a 30-Minute Session</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">Foresight <span>|</span> Consulting Group</div>
+          <div class="footer-meta">&copy; 2026 Foresight Consulting Group LLC &nbsp;&middot;&nbsp; foresight-consult.com &nbsp;&middot;&nbsp; St. Louis, Missouri</div>
+        </div>
+        <div class="footer-links">
+          <a onclick="showPage('services')">Services</a><a onclick="showPage('diagnostic')">Diagnostic</a><a onclick="showPage('about')">About</a><a onclick="showPage('contact')">Contact</a><a href="https://linkedin.com/in/lenaharness" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- end about -->
+
+
+<!-- =================================================================
+     PAGE 5: CONTACT
+     ================================================================= -->
+<div class="panel" id="contact">
+
+  <div class="page-header">
+    <div class="container">
+      <div class="eyebrow eyebrow-light">Contact</div>
+      <h1>Let us talk about what you are facing.</h1>
+      <p class="lead">No sales process. A direct conversation about the challenge you are navigating and whether FCG can help you close the gap.</p>
+    </div>
+  </div>
+
+  <section class="section-white" style="padding-bottom:0;">
+    <div class="container">
+      <div class="contact-grid">
+
+        <!-- Book a Session -->
+        <div class="contact-card featured">
+          <p class="c-tag">Fastest path</p>
+          <h2>Book a 30-Minute Session</h2>
+          <p class="c-sub">Pick a time directly. Come with a challenge. Leave with a clearer picture of where to start.</p>
+          <hr>
+          <p>Sessions are a direct conversation — not a discovery call designed to lead to a pitch. Bring the challenge you are working through. We will assess whether it is something FCG can help with, and if it is, what the right starting point looks like.</p>
+          <p>No preparation required. No follow-up obligation.</p>
+          <!-- FRAMER: Replace with Calendly inline embed widget -->
+          <!-- Calendly inline widget: Settings > Share > Add to website > Inline embed -->
+          <div class="cal-embed">[ Calendly Embed — Book a 30-Min Discovery Session ]</div>
+          <p style="font-size:12px; color:var(--grey-500);">Sessions available Monday through Thursday &nbsp;&middot;&nbsp; Video call &nbsp;&middot;&nbsp; 30 minutes</p>
+        </div>
+
+        <!-- Send a Message -->
+        <div class="contact-card">
+          <p class="c-tag">Prefer to write first</p>
+          <h2>Send a Message</h2>
+          <p class="c-sub">Describe what you are working on. A response arrives within one business day.</p>
+          <hr>
+          <!-- FRAMER: Wire form submission to info@foresight-consult.com via Formspree or Framer Forms -->
+          <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+            <div class="form-field">
+              <label for="contact-name">Name</label>
+              <input type="text" id="contact-name" name="name" placeholder="Your name" required>
+            </div>
+            <div class="form-field">
+              <label for="contact-company">Company</label>
+              <input type="text" id="contact-company" name="company" placeholder="Organization name">
+            </div>
+            <div class="form-field">
+              <label for="contact-email">Email</label>
+              <input type="email" id="contact-email" name="email" placeholder="you@company.com" required>
+            </div>
+            <div class="form-field">
+              <label for="contact-message">What prompted you to reach out?</label>
+              <textarea id="contact-message" name="message" placeholder="Describe the challenge you are navigating or the question you are trying to answer." required></textarea>
+            </div>
+            <input type="hidden" name="_replyto" value="info@foresight-consult.com">
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Send Message &#8594;</button>
+          </form>
+          <p style="font-size:12px; color:var(--grey-500); margin-top:12px; text-align:center;">No spam. No list subscriptions. Just a response.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Info Bar -->
+  <section class="contact-info-bar">
+    <div class="container">
+      <div class="contact-info-grid">
+        <div class="contact-info-item">
+          <div class="ci-label">Email</div>
+          <p><a href="mailto:info@foresight-consult.com" style="color:var(--grey-800); text-decoration:none;">info@foresight-consult.com</a></p>
+          <p class="ci-sub">Response within one business day</p>
+        </div>
+        <div class="contact-info-item">
+          <div class="ci-label">LinkedIn</div>
+          <p><a href="https://linkedin.com/in/lenaharness" target="_blank" rel="noopener" style="color:var(--grey-800); text-decoration:none;">linkedin.com/in/lenaharness</a></p>
+          <p class="ci-sub">Direct message welcome</p>
+        </div>
+        <div class="contact-info-item">
+          <div class="ci-label">Location</div>
+          <p>St. Louis, Missouri</p>
+          <p class="ci-sub">Available nationwide &nbsp;&middot;&nbsp; Remote and on-site</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer" style="margin-top:0;">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">Foresight <span>|</span> Consulting Group</div>
+          <div class="footer-meta">&copy; 2026 Foresight Consulting Group LLC &nbsp;&middot;&nbsp; foresight-consult.com &nbsp;&middot;&nbsp; St. Louis, Missouri</div>
+        </div>
+        <div class="footer-links">
+          <a onclick="showPage('services')">Services</a><a onclick="showPage('diagnostic')">Diagnostic</a><a onclick="showPage('about')">About</a><a onclick="showPage('contact')">Contact</a><a href="https://linkedin.com/in/lenaharness" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- end contact -->
+
+
+<script>
+/* ============================================================
+   PAGE NAVIGATION
+   In Framer: each panel becomes a separate page.
+   Nav links use Framer's built-in page linking.
+   ============================================================ */
+function showPage(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+  // Update active state on nav links
+  ['services','diagnostic','about','contact'].forEach(page => {
+    const el = document.getElementById('nav-' + page);
+    if (el) el.classList.toggle('active', page === id);
+  });
+}
+
+/* ============================================================
+   ACCORDION
+   In Framer: replicate as Framer interactions on each accordion item.
+   One section open at a time per sidebar.
+   ============================================================ */
+function toggleAccordion(btn) {
+  const item = btn.closest('.accordion-item');
+  const isOpen = item.classList.contains('open');
+  item.closest('.service-sidebar').querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+/* ============================================================
+   MOBILE MENU
+   In Framer: use Framer's built-in nav component with mobile breakpoint.
+   ============================================================ */
+function toggleMobileMenu() {
+  document.getElementById('mobile-menu').classList.toggle('open');
+}
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+</script>
+
+</body>
+</html>
