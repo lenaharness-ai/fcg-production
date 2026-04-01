@@ -1,84 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foresight Consulting Group | AI Governance</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root { --navy: #071828; --blue-light: #60A5FA; --bg: #F8FAFC; }
-        body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg); color: var(--navy); }
-        nav { background: var(--navy); padding: 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .logo { color: white; font-weight: 800; font-size: 20px; text-decoration: none; }
-        .nav-links { display: none; } /* Hidden on mobile by default */
-        .hamburger { color: white; font-size: 24px; cursor: pointer; display: block; }
-        
-        /* Mobile Menu Panel */
-        #mobile-menu { display: none; background: var(--navy); padding: 20px; position: absolute; width: 100%; left: 0; top: 60px; box-sizing: border-box; }
-        #mobile-menu a { display: block; color: white; padding: 15px 0; text-decoration: none; border-bottom: 1px solid #1a2a3a; }
-
-        /* Content Panels */
-        .page-panel { padding: 60px 20px; max-width: 1000px; margin: 0 auto; display: none; }
-        #home { display: block; } /* Show home by default */
-        
-        .hero { text-align: center; padding: 80px 20px; background: white; border-bottom: 1px solid #e2e8f0; }
-        .btn { background: var(--blue-light); color: var(--navy); padding: 16px 32px; border-radius: 6px; text-decoration: none; font-weight: 700; display: inline-block; margin-top: 20px; }
-        
-        @media (min-width: 768px) {
-            .nav-links { display: flex; gap: 30px; }
-            .nav-links a { color: white; text-decoration: none; font-weight: 600; }
-            .hamburger { display: none; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foresight Consulting Group | Coming Soon</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      background-color: #0A1628;
+      font-family: Inter, system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      color: white;
+    }
+    .badge { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #90B2C8; margin-bottom: 20px; }
+    .logo { font-size: 22px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: white; margin-bottom: 32px; }
+    .divider { width: 48px; height: 3px; background-color: #2E5666; margin: 0 auto 32px; border-radius: 2px; }
+    h1 { font-size: 36px; font-weight: 700; line-height: 1.2; text-align: center; margin-bottom: 20px; max-width: 520px; }
+    p { font-size: 16px; line-height: 1.7; color: #CBD5E1; text-align: center; max-width: 480px; margin-bottom: 40px; }
+    .cta { display: inline-block; background-color: #2E5666; color: white; text-decoration: none; padding: 14px 32px; border-radius: 4px; font-size: 14px; font-weight: 600; }
+    .cta:hover { opacity: 0.85; }
+    .footer { position: fixed; bottom: 24px; font-size: 11px; color: #334155; text-align: center; }
+  </style>
 </head>
 <body>
-
-<nav>
-    <a href="#" onclick="showPage('home')" class="logo">FCG</a>
-    <div class="nav-links">
-        <a href="#" onclick="showPage('services')">Services</a>
-        <a href="#" onclick="showPage('about')">About</a>
-        <a href="/diagnostic">Assessment</a>
-    </div>
-    <div class="hamburger" onclick="toggleMobileMenu()">☰</div>
-</nav>
-
-<div id="mobile-menu">
-    <a href="#" onclick="showPage('services')">Services</a>
-    <a href="#" onclick="showPage('about')">About</a>
-    <a href="/diagnostic">Take Assessment</a>
-</div>
-
-<div id="home" class="page-panel">
-    <section class="hero">
-        <h1>AI is moving fast. <br><span style="color:var(--blue-light)">Your governance should too.</span></h1>
-        <p>Specialized AI literacy and governance for highly regulated financial services.</p>
-        <a href="/diagnostic" class="btn">Take the Lite Assessment →</a>
-    </section>
-</div>
-
-<div id="services" class="page-panel">
-    <h2>Our Services</h2>
-    <p>Strategic AI Literacy, Governance Frameworks, and Executive Readiness.</p>
-</div>
-
-<div id="about" class="page-panel">
-    <h2>About the Founder</h2>
-    <p>Led by Lena Harness, former Director at Edward Jones with 20+ years of delivery experience.</p>
-</div>
-
-<script>
-    function toggleMobileMenu() {
-        const menu = document.getElementById('mobile-menu');
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    }
-    function showPage(pageId) {
-        document.querySelectorAll('.page-panel').forEach(p => p.style.display = 'none');
-        document.getElementById(pageId).style.display = 'block';
-        document.getElementById('mobile-menu').style.display = 'none';
-        window.scrollTo(0,0);
-    }
-</script>
-
+  <div class="badge">FCG — AI Governance &amp; Technology Strategy</div>
+  <div class="logo">Foresight Consulting Group</div>
+  <div class="divider"></div>
+  <h1>Something Powerful<br>Is Coming.</h1>
+  <p>We are putting the finishing touches on a new experience for enterprise AI governance, technology strategy, and portfolio leadership.<br><br>In the meantime, we would love to connect.</p>
+  <a class="cta" href="mailto:info@foresight-consult.com">Get in Touch &rarr;</a>
+  <div class="footer">&copy; 2026 Foresight Consulting Group LLC &nbsp;&middot;&nbsp; <foresight-consult.com></div>
 </body>
 </html>
